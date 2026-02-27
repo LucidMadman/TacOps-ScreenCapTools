@@ -79,3 +79,25 @@ HDR Brightness = 0.000
 ![Auto Camera Screenshot Settings](Docs/Img/AutoCameraScreenshotSettings.png)
 
 16) Now if you press the move to start and move to end buttons the camera should move to an exact top view of each barrel, lined up on the world bounds
+**Note:** The camera field of view is changed by the window, this quite different from the standard FOV you are used to in the tools, it can make navigating around a bit tricky but it is important for the post processing toolset.
+![Start Barrel](Docs/Img/StartBarrel.png)
+
+17) Before we start the capture we need to disable the gizmos and other things viewable in editor view. In the view menu disable:
+- Visualisers
+- Permanent Entity Visualisers
+- World Bounds
+
+18) Some maps also have slots for compositions to be placed in GM, like checkpoints on roads. Also hospitals, repair points and fueling stops will have large white cylinders viewable in the editor.  These all need to have their visibiliity turned off in the hirearchy panel.
+
+19) Now press the move camera to start button
+
+20) If you have a second screen then you can now press F11 to set the main world view to full screen and start the capture
+
+21) If you don't have a second screen you'll need to start the capture and then set the view to full screen by pressing F11, you have 5 seconds to to do this after pressing start capture.
+
+21) Once the capture has started you will see the camera move very couple of seconds, if you have a second screen you can see the progress in the log console window.
+
+22) Once the capture is complete the log consonle will display finished an you can find all the captures in the `%USERPROFILE%\Documents\My Games\ArmaReforgerWorkbench\profile\mapoutput
+folder.
+
+23) Your now ready to use the compression and upload toolset.
