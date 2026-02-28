@@ -47,12 +47,10 @@ This guide is a slightly modified version of Nick's own guide for his script to 
 9) Place a find the Barrel_Filled.et and place one in the world at coords 0,0,0 and set it's scale to 10. Press F to jump the camera to that location.
 ![Barrel at Origin](Docs/Img/OriginBarrel.png)
 
-10) From there you can look around and you'll see the World Bounds defined as a yellow wireframe box.  You want to move the camera to the opposite corner from where the origin barrel is placed. If you can't see the yellow bounding box check that you have World Bounds enabled in the View menu.
+10) From there you can look around and you'll see the World Bounds defined as a yellow wireframe box.  You want to move the camera to the opposite corner from where the origin barrel is placed. If you can't see the yellow bounding box check that you have World Bounds enabled in the View menu. You can also select the GenericWorldEntity in the hirearchy check the Bounds Max to get the approximate location of the map, note that this can be slightly different to the terrain bounds that we care about.
 ![World Bounds](Docs/Img/WorldBounds.png)
 
-11) Move the camera to the opposite corner of the map and place another barrel on the opposite corner of the world box.  The world bounds box *should* always be square so make sure your a and z values are identical.  If there is terrain that needs to be captured very close to the edge of the world bounds map consider moving the barrel outside the world bounds.
-
-**IMPORTANT** the barrel coordinates must but in multiples of the map step, for our workflow we use a map step of 100 so make sure the coordinates of the end barrel are rounded up to multpiles of 100.  e.g. if a map is 4096x4096 the barrel should be placed at 5000,0,5000.
+11) Move the camera to the opposite corner of the map and place another barrel on the opposite corner of the world box.  The world bounds box *should* always be square so make sure your x and z values are identical for the barrel.
 
 12) Now open up the the weather editor panel and make sure the weather is set to clear.  Experiment with the time of day to find a sweat spot of the shadows not being too long but also having some. Usually late morning or early afternoon is baout right but each terrain si different.
 
@@ -64,7 +62,7 @@ This guide is a slightly modified version of Nick's own guide for his script to 
 
 15) In the Auto Camera Screenshot window set:
 - Start Coords to 0,0,0 (same as the origin barrel)
-- End Coords to the same as the end barrel
+- End Coords to the same as the end barrel but round up to the next 100 to ensure the script runs properly.
 - Camera Height = 950
 -  Absolute Camera Height disabeld
 - Step Size = 100
