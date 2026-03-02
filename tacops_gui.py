@@ -1,11 +1,16 @@
 import os
 import threading
 import time
+import multiprocessing
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 
 # Version string (update this or pass via build script)
 __version__ = "0.0.1"
+
+# Ensure multiprocessing behaves correctly in frozen executables (PyInstaller)
+# and prevents worker processes from re‑launching the GUI when spawn is used.
+multiprocessing.freeze_support()
 
 # import the programmatic functions from the other scripts
 from webpconvert import convert_folder
@@ -206,6 +211,14 @@ class App(tk.Tk):
         notebook.add(UploadFrame(notebook), text="Upload")
 
 
-if __name__ == '__main__':
+
+def main():
     app = App()
     app.mainloop()
+
+
+if __name__ == '__main__':
+    # multiprocessing.freeze_support() has already been called above when the
+    # module was imported, but call it again here for good measure.
+    multiprocessing.freeze_support()
+    main()

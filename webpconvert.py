@@ -5,7 +5,14 @@ import zipfile
 from pathlib import Path
 import send2trash
 import re
+import multiprocessing
 from concurrent.futures import ProcessPoolExecutor, as_completed
+
+# multiprocessing.freeze_support is safe to call every time; it is a no-op
+# on non‑frozen environments but required when the application is bundled. It
+# also ensures the default start method is spawn which is necessary on
+# Windows and for executables created with PyInstaller.
+multiprocessing.freeze_support()
 
 # default configuration (used by CLI; override via environment variables)
 ROOT_FOLDER = os.environ.get("TACOPS_SOURCE", "")
@@ -60,15 +67,25 @@ def move_to_recycle_bin(file_path):
         print(f"Error moving {file_path} to recycle bin: {e}")
         return False
 
-def process_png(png_file_path):
-    """Worker: convert a single PNG and recycle the original."""
+def process_png(png_file_path, root_folder):
+    """Worker: convert a single PNG and recycle the original.
+
+    ``root_folder`` is passed explicitly because the global ``ROOT_FOLDER`` may
+    not be set (especially when called from the GUI) and could even live on a
+    different drive.  Using a parameter avoids cross‑drive relpath errors.
+    """
     webp = convert_png_to_webp(png_file_path)
     if webp:
         move_to_recycle_bin(png_file_path)
         # return relative path for zipping + coords tuple
         filename = os.path.basename(png_file_path)
         mapname, x, y = parse_png_filename(filename)
-        rel = os.path.relpath(webp, ROOT_FOLDER).replace('\\','/')
+        try:
+            rel = os.path.relpath(webp, root_folder).replace('\\','/')
+        except ValueError:
+            # occurred when the two paths are on different drives; fall back to
+            # basename so the file still gets into the zip with a sensible name.
+            rel = os.path.basename(webp)
         return webp, rel, mapname, x, y
     return None
 
@@ -98,11 +115,14 @@ def convert_folder(root_folder, zip_output_folder, delete_source=False,
     count = 0
     # use parallel executor for conversion
     with ProcessPoolExecutor() as pool:
-        futures = {pool.submit(process_png, p): p for p in png_paths}
+        futures = {pool.submit(process_png, p, root_folder): p for p in png_paths}
         for fut in as_completed(futures):
             count += 1
             png_file_path = futures[fut]
-            rel = os.path.relpath(png_file_path, root_folder)
+            try:
+                rel = os.path.relpath(png_file_path, root_folder)
+            except ValueError:
+                rel = os.path.basename(png_file_path)
             try:
                 res = fut.result()
             except Exception as e:
